@@ -17,38 +17,38 @@ export function RahulMessageStory() {
     restDelta: 0.001,
   });
 
-  // Track the narrative stage
-  // 0: Empty Conversation + Title
-  // 1: Rahul Message Arrives
-  // 2: 3-Dot Typing Indicator
-  // 3: THREAD Contextual Intervention
-  // 4: Send Triggered / Sent State
+  // Narrative stages:
+  // 0: Empty Canvas + Dominant Title
+  // 1: Rahul Message Bubble Enters
+  // 2: Typing Indicator (• • •)
+  // 3: Light, Friendly THREAD Suggestion
+  // 4: Send Triggered -> Sent State
   const [stage, setStage] = useState(0);
 
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    if (latest < 0.18) setStage(0);
-    else if (latest < 0.38) setStage(1);
-    else if (latest < 0.58) setStage(2);
-    else if (latest < 0.82) setStage(3);
+    if (latest < 0.16) setStage(0);
+    else if (latest < 0.36) setStage(1);
+    else if (latest < 0.56) setStage(2);
+    else if (latest < 0.80) setStage(3);
     else setStage(4);
   });
 
-  // Title transforms as scroll progresses: fades, blurs, and shifts back
-  const titleOpacity = useTransform(smoothProgress, [0, 0.22, 0.38], [1, 0.4, 0.08]);
-  const titleBlur = useTransform(smoothProgress, [0, 0.25], [0, 8]);
-  const titleScale = useTransform(smoothProgress, [0, 0.35], [1, 0.94]);
-  const titleY = useTransform(smoothProgress, [0, 0.35], [0, -30]);
+  // Title smoothly recedes: fades, blurs, and shifts back into background
+  const titleOpacity = useTransform(smoothProgress, [0, 0.18, 0.35], [1, 0.35, 0.04]);
+  const titleBlur = useTransform(smoothProgress, [0, 0.25], [0, 10]);
+  const titleScale = useTransform(smoothProgress, [0, 0.35], [1, 0.92]);
+  const titleY = useTransform(smoothProgress, [0, 0.35], [0, -40]);
 
-  // Viewport messaging UI positioning & elevation
-  const chatY = useTransform(smoothProgress, [0, 0.3, 0.85], [40, 0, -20]);
+  // Subtle floating parallax for the conversation elements
+  const streamY = useTransform(smoothProgress, [0, 0.35, 0.85], [30, 0, -25]);
 
   return (
     <section ref={containerRef} className="rahul-story-section" id="story-flagship">
       <div className="rahul-story-sticky">
-        {/* Spatial background context nodes */}
+        {/* Spatial background depth */}
         <ContextField />
 
-        {/* Narrative Title (Left / Upper Region) - Never clipped */}
+        {/* Narrative Title — Left / Upper region, recedes as scroll drives the conversation */}
         <motion.div
           className="rahul-story-heading"
           style={{
@@ -64,196 +64,157 @@ export function RahulMessageStory() {
             <em>to manage.</em>
           </h2>
           <p className="story-lead">
-            Rahul asks for a document without giving the exact filename or location.
-            THREAD resolves the meaning before you even switch apps.
+            Rahul asks for a document without providing an exact filename or location.
           </p>
         </motion.div>
 
-        {/* The Direct Viewport Messaging Interface (Canvas IS the screen) */}
+        {/* Floating Motion Graphic Conversation Canvas — NO phone, NO container, NO rectangle */}
         <motion.div
-          className="viewport-messaging-canvas"
-          style={{ y: chatY }}
+          className="floating-conversation-canvas"
+          style={{ y: streamY }}
         >
-          {/* Conversation Top Header */}
-          <div className="msg-header">
-            <div className="msg-recipient">
-              <div className="msg-avatar">
-                <span>R</span>
-                <span className="msg-online-dot" />
-              </div>
-              <div className="msg-recipient-info">
-                <b>Rahul Sharma</b>
-                <span className="msg-meta">Active now · Mobile</span>
-              </div>
-            </div>
-            <div className="msg-header-pills">
-              <span className="msg-pill">TODAY · 19:18</span>
-              <span className="msg-pill live">CONTEXT CONNECTED</span>
-            </div>
-          </div>
-
-          {/* Conversation Stream */}
-          <div className="msg-stream">
-            {/* Timestamp */}
-            <div className="msg-date-divider">
-              <span>Today 19:18</span>
+          {/* State 1+: Rahul Sender Badge & Incoming Message Bubble */}
+          <motion.div
+            className="floating-message-unit"
+            initial={false}
+            animate={
+              stage >= 1
+                ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+                : { opacity: 0, y: 36, scale: 0.92, filter: "blur(6px)" }
+            }
+            transition={{
+              type: "spring",
+              stiffness: 190,
+              damping: 22,
+              mass: 0.8,
+            }}
+          >
+            {/* Minimal floating sender label */}
+            <div className="floating-sender-tag">
+              <span className="sender-avatar">R</span>
+              <span className="sender-name">RAHUL</span>
+              <span className="sender-time">19:18</span>
             </div>
 
-            {/* State 2+: Rahul's Incoming Message */}
-            <motion.div
-              className="msg-bubble-row incoming"
-              initial={false}
-              animate={
-                stage >= 1
-                  ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
-                  : { opacity: 0, y: 24, scale: 0.95, filter: "blur(4px)" }
-              }
-              transition={{ type: "spring", stiffness: 220, damping: 24 }}
-            >
-              <div className="msg-bubble incoming-bubble">
-                <p className="msg-text">Can you send me that hackathon PDF?</p>
-                <span className="msg-time">19:18</span>
-              </div>
-            </motion.div>
+            {/* Rahul's Chat Bubble */}
+            <div className="floating-bubble rahul-bubble">
+              <p className="bubble-content">Can you send me that hackathon PDF?</p>
+            </div>
+          </motion.div>
 
-            {/* State 3: Three Sequential Animated Dots Typing Indicator */}
-            <motion.div
-              className="msg-typing-indicator-row"
-              initial={false}
-              animate={
-                stage === 2
-                  ? { opacity: 1, height: "auto", y: 0 }
-                  : { opacity: 0, height: 0, y: 8 }
-              }
-              transition={{ duration: 0.28, ease: "easeInOut" }}
-            >
-              <div className="typing-bubble">
-                <span className="typing-dot dot-1" />
-                <span className="typing-dot dot-2" />
-                <span className="typing-dot dot-3" />
-              </div>
-              <span className="typing-label">THREAD resolving contextual reference...</span>
-            </motion.div>
+          {/* State 2: Three Sequential Animated Dots Typing Indicator (• • •) */}
+          <motion.div
+            className="floating-typing-wrapper"
+            initial={false}
+            animate={
+              stage === 2
+                ? { opacity: 1, height: "auto", y: 0, filter: "blur(0px)" }
+                : { opacity: 0, height: 0, y: 12, filter: "blur(4px)" }
+            }
+            transition={{ duration: 0.26, ease: "easeInOut" }}
+          >
+            <div className="floating-typing-indicator">
+              <span className="typing-dot dot-1" />
+              <span className="typing-dot dot-2" />
+              <span className="typing-dot dot-3" />
+            </div>
+          </motion.div>
 
-            {/* State 4+: THREAD OS Contextual Intervention */}
-            <motion.div
-              className="thread-intervention-container"
-              initial={false}
-              animate={
-                stage >= 3
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: 32, scale: 0.96 }
-              }
-              transition={{ type: "spring", stiffness: 240, damping: 25 }}
-            >
-              <div className="thread-os-card">
-                {/* Intervention Header */}
-                <div className="os-card-header">
-                  <div className="os-badge">
-                    <span className="os-pulse" />
-                    <b>THREAD</b>
-                    <span className="os-subtag">CONTEXT ENGINE</span>
-                  </div>
-                  <span className="os-confidence-tag">HIGH CONFIDENCE · 98%</span>
-                </div>
-
-                {/* Intent resolution summary */}
-                <p className="os-intent-text">I found the PDF you meant.</p>
-
-                {/* Detected Document Attachment */}
-                <div className="os-file-chip">
-                  <div className="os-file-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="16" y1="13" x2="8" y2="13" />
-                      <line x1="16" y1="17" x2="8" y2="17" />
-                      <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                  </div>
-                  <div className="os-file-details">
-                    <b className="os-file-name">iQOO_Hackathon_Guide.pdf</b>
-                    <span className="os-file-meta">Recent context · Hackathon · 2.4 MB</span>
-                  </div>
-                  <span className="os-file-origin">Downloads / Today 18:45</span>
-                </div>
-
-                {/* Actions */}
-                <div className="os-actions">
-                  <motion.button
-                    className={`os-btn-send ${stage >= 4 ? "sent-active" : ""}`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {stage >= 4 ? (
-                      <>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        Sent
-                      </>
-                    ) : (
-                      <>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <line x1="22" y1="2" x2="11" y2="13" />
-                          <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                        </svg>
-                        Send PDF to Rahul
-                      </>
-                    )}
-                  </motion.button>
-                  <button className="os-btn-dismiss">Dismiss</button>
+          {/* State 3+: Light, Friendly, Contextual THREAD Suggestion */}
+          <motion.div
+            className="floating-thread-unit"
+            initial={false}
+            animate={
+              stage >= 3
+                ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+                : { opacity: 0, y: 32, scale: 0.94, filter: "blur(6px)" }
+            }
+            transition={{
+              type: "spring",
+              stiffness: 210,
+              damping: 24,
+              mass: 0.85,
+            }}
+          >
+            <div className="thread-friendly-card">
+              {/* Card Header: Light, quiet, friendly indicator */}
+              <div className="thread-card-header">
+                <div className="thread-pill-badge">
+                  <span className="thread-sparkle-dot" />
+                  <b>THREAD</b>
+                  <span className="thread-subcaption">Contextual Suggestion</span>
                 </div>
               </div>
-            </motion.div>
 
-            {/* State 5: Final Sent Outgoing Bubble */}
-            <motion.div
-              className="msg-bubble-row outgoing"
-              initial={false}
-              animate={
-                stage >= 4
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: 20, scale: 0.95 }
-              }
-              transition={{ type: "spring", stiffness: 220, damping: 24 }}
-            >
-              <div className="msg-bubble outgoing-bubble">
-                <div className="sent-file-badge">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {/* Natural friendly intent */}
+              <p className="thread-friendly-intent">I found the PDF you meant.</p>
+
+              {/* Document Preview Chip */}
+              <div className="thread-friendly-file">
+                <div className="file-icon-box">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
                   </svg>
-                  <span>iQOO_Hackathon_Guide.pdf</span>
                 </div>
-                <div className="sent-status-footer">
-                  <span>Sent · 19:19</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                <div className="file-info-text">
+                  <b className="file-title">iQOO_Hackathon_Guide.pdf</b>
+                  <span className="file-subtext">Recent context · Hackathon</span>
                 </div>
               </div>
-            </motion.div>
-          </div>
 
-          {/* Sticky Progress Indicator Footer */}
-          <div className="story-scroll-telemetry">
-            <span className="telemetry-node">
-              <i className={stage >= 1 ? "active" : ""} /> MESSAGE DETECTED
-            </span>
-            <span className="telemetry-arrow">→</span>
-            <span className="telemetry-node">
-              <i className={stage >= 2 ? "active" : ""} /> TEMPORAL GRAPH
-            </span>
-            <span className="telemetry-arrow">→</span>
-            <span className="telemetry-node">
-              <i className={stage >= 3 ? "active" : ""} /> NEEDLE 2 TOOL PREP
-            </span>
-            <span className="telemetry-arrow">→</span>
-            <span className="telemetry-node">
-              <i className={stage >= 4 ? "active" : ""} /> ACTION COMPLETED
-            </span>
-          </div>
+              {/* Compact, Friendly Action Buttons */}
+              <div className="thread-friendly-actions">
+                <motion.button
+                  className={`btn-friendly-send ${stage >= 4 ? "sent" : ""}`}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  {stage >= 4 ? (
+                    <>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      Sent
+                    </>
+                  ) : (
+                    "Send"
+                  )}
+                </motion.button>
+                <button className="btn-friendly-dismiss">Dismiss</button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* State 4: Sent Confirmation Bubble */}
+          <motion.div
+            className="floating-sent-unit"
+            initial={false}
+            animate={
+              stage >= 4
+                ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+                : { opacity: 0, y: 20, scale: 0.94, filter: "blur(4px)" }
+            }
+            transition={{
+              type: "spring",
+              stiffness: 220,
+              damping: 24,
+            }}
+          >
+            <div className="floating-bubble sent-bubble">
+              <div className="sent-file-row">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <span>iQOO_Hackathon_Guide.pdf</span>
+              </div>
+              <span className="sent-time-tag">Sent · 19:19</span>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
