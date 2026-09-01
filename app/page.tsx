@@ -1,3 +1,84 @@
-import { ThreadScrollStory } from "@/components/scroll-story/ThreadScrollStory";
-import { ScenarioShowcase, NeedleSection, Confidence } from "@/components/sections/ShowcaseSections";
-export default function Page(){return <main><nav><b>THREAD</b><span>iQOO HACKATHON 2026 · PRODUCTIVITY</span><span>CONTEXT → INTENT → ACTION</span></nav><section className="hero"><div><span className="eyebrow">YOUR PHONE, RECONSIDERED</span><h1>Your phone knows.<br/><em>You still have to search.</em></h1><p>Digital context is scattered across messages, files, screens, calendars and apps. THREAD makes it useful.</p></div><div className="hero-footer"><b>THREAD</b><span>Your phone understands what you mean.</span><small>SCROLL TO SEE IT HAPPEN ↓</small></div></section><ThreadScrollStory/><ScenarioShowcase/><section className="manifesto"><h2>AI already knows how to understand.<em>The hard part is making it useful.</em></h2><p>THREAD turns understanding into action.</p><span>CONTEXT ↓ INTENT ↓ TOOL ↓ ACTION</span></section><NeedleSection/><section className="architecture"><span className="eyebrow">HOW THREAD THINKS</span><h2>Context becomes <em>an action.</em></h2>{[["AUTHORIZED PHONE CONTEXT","People · Messages · Files · Screens · Calendar · Voice"],["CONTEXT ENGINE","Build structured events. Expire raw content."],["TEMPORAL GRAPH","Recent activity linked by time + topic."],["INTENT LAYER","“that one” · “the thing from yesterday” · “send it to him”"],["NEEDLE 2","Intent → tool retrieval → structured call → confidence"],["ACTION","Share · Reminder · Calendar · Maps · Files · Office Kit"]].map(([a,b])=><div className="architecture-row" key={a}><span>{a}</span><b>{b}</b></div>)}</section><Confidence/><footer><h2>THREAD</h2><p>Your phone understands what you mean.</p><a href="#top">EXPLORE THE BUILD</a></footer></main>}
+import { RahulMessageStory } from "@/components/scroll-story/RahulMessageStory";
+import { DocumentContextStory } from "@/components/scroll-story/DocumentContextStory";
+import { ManifestoSection } from "@/components/sections/ManifestoSection";
+import { NeedleOrchestration } from "@/components/sections/NeedleOrchestration";
+import { RelevanceSection } from "@/components/sections/RelevanceSection";
+
+export default function Page() {
+  return (
+    <main>
+      {/* Top Editorial Navigation */}
+      <nav>
+        <b>THREAD</b>
+        <span>iQOO HACKATHON 2026 · PRODUCTIVITY</span>
+        <span>CONTEXT → INTENT → ACTION</span>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <div>
+          <span className="eyebrow">YOUR PHONE, RECONSIDERED</span>
+          <h1>
+            Your phone knows.<br />
+            <em>You still have to search.</em>
+          </h1>
+          <p>
+            Digital context is scattered across messages, files, screens, notifications, and calendars.
+            THREAD resolves implicit intent across authorized phone signals and turns understanding into direct action.
+          </p>
+        </div>
+        <div className="hero-footer">
+          <b>THREAD</b>
+          <span>Your phone understands what you mean.</span>
+          <small>SCROLL TO EXPERIENCE THE INTERACTION ↓</small>
+        </div>
+      </section>
+
+      {/* 1. Flagship Sticky Scroll Scene — Rahul / PDF Request (Viewport is the Canvas) */}
+      <RahulMessageStory />
+
+      {/* 2. Large Document Viewer, Particle Extraction Stream, & Implicit Reference */}
+      <DocumentContextStory />
+
+      {/* 3. Cinematic Typographic Pause */}
+      <ManifestoSection />
+
+      {/* 4. Needle 2 Conductor & Live Execution Pipeline Workbench */}
+      <NeedleOrchestration />
+
+      {/* 5. Product Principle — Relevance ("THREAD knows when to stay silent") */}
+      <RelevanceSection />
+
+      {/* 6. System Architecture Summary */}
+      <section className="architecture" id="architecture">
+        <span className="eyebrow">SYSTEM TOPOLOGY</span>
+        <h2>
+          Context becomes <em>an action.</em>
+        </h2>
+        <div className="architecture-stack">
+          {[
+            ["AUTHORIZED PHONE CONTEXT", "People · Messages · Files · Screens · Calendar · Voice"],
+            ["CONTEXT ENGINE", "Build structured events. Expire raw content on-device."],
+            ["TEMPORAL GRAPH", "Recent activity linked by temporal proximity + topic vectors."],
+            ["INTENT LAYER", "Resolves pronouns: “that one” · “this” · “send it to him”"],
+            ["NEEDLE 2 CONDUCTOR", "Intent → tool retrieval → structured call → confidence loop"],
+            ["SYSTEM ACTIONS", "Share · Reminder · Calendar · Navigation · Files · Office Kit"],
+          ].map(([stageTitle, stageDesc]) => (
+            <div className="architecture-row" key={stageTitle}>
+              <span>{stageTitle}</span>
+              <b>{stageDesc}</b>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer>
+        <span className="eyebrow">iQOO HACKATHON 2026</span>
+        <h2>THREAD</h2>
+        <p>Your phone understands what you mean.</p>
+        <a href="#story-flagship">BACK TO START ↑</a>
+      </footer>
+    </main>
+  );
+}
